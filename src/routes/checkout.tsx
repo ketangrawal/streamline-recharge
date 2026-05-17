@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Link, redirect } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { z } from "zod";
@@ -23,7 +23,7 @@ export const Route = createFileRoute("/checkout")({
     if (typeof window === "undefined") return;
     const u = (() => { try { return JSON.parse(localStorage.getItem("cabletv_session_v2") ?? "null"); } catch { return null; } })();
     if (!u || u.role !== "subscriber" || !u.operator_id) {
-      throw (require("@tanstack/react-router") as typeof import("@tanstack/react-router")).redirect({ to: "/subscriber-login" });
+      throw redirect({ to: "/subscriber-login" });
     }
   },
   head: () => ({ meta: [{ title: "Checkout" }] }),

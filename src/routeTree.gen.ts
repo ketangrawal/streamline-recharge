@@ -10,17 +10,22 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SuperAdminLoginRouteImport } from './routes/super-admin-login'
+import { Route as SuperAdminRouteImport } from './routes/super-admin'
 import { Route as SubscriberLoginRouteImport } from './routes/subscriber-login'
 import { Route as SubscriberRouteImport } from './routes/subscriber'
 import { Route as PaymentSuccessRouteImport } from './routes/payment-success'
 import { Route as PaymentFailedRouteImport } from './routes/payment-failed'
 import { Route as OperatorLoginRouteImport } from './routes/operator-login'
+import { Route as OperatorRouteImport } from './routes/operator'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SuperAdminIndexRouteImport } from './routes/super-admin.index'
 import { Route as SubscriberIndexRouteImport } from './routes/subscriber.index'
+import { Route as SuperAdminSettingsRouteImport } from './routes/super-admin.settings'
+import { Route as SuperAdminOperatorsRouteImport } from './routes/super-admin.operators'
 import { Route as SubscriberRechargesRouteImport } from './routes/subscriber.recharges'
 import { Route as SubscriberProfileRouteImport } from './routes/subscriber.profile'
 import { Route as SubscriberPacksRouteImport } from './routes/subscriber.packs'
@@ -29,6 +34,11 @@ import { Route as SubscriberNotificationsRouteImport } from './routes/subscriber
 const SuperAdminLoginRoute = SuperAdminLoginRouteImport.update({
   id: '/super-admin-login',
   path: '/super-admin-login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SuperAdminRoute = SuperAdminRouteImport.update({
+  id: '/super-admin',
+  path: '/super-admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SubscriberLoginRoute = SubscriberLoginRouteImport.update({
@@ -56,6 +66,11 @@ const OperatorLoginRoute = OperatorLoginRouteImport.update({
   path: '/operator-login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OperatorRoute = OperatorRouteImport.update({
+  id: '/operator',
+  path: '/operator',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FaqRoute = FaqRouteImport.update({
   id: '/faq',
   path: '/faq',
@@ -81,10 +96,25 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SuperAdminIndexRoute = SuperAdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => SuperAdminRoute,
+} as any)
 const SubscriberIndexRoute = SubscriberIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => SubscriberRoute,
+} as any)
+const SuperAdminSettingsRoute = SuperAdminSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => SuperAdminRoute,
+} as any)
+const SuperAdminOperatorsRoute = SuperAdminOperatorsRouteImport.update({
+  id: '/operators',
+  path: '/operators',
+  getParentRoute: () => SuperAdminRoute,
 } as any)
 const SubscriberRechargesRoute = SubscriberRechargesRouteImport.update({
   id: '/recharges',
@@ -113,17 +143,22 @@ export interface FileRoutesByFullPath {
   '/checkout': typeof CheckoutRoute
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
+  '/operator': typeof OperatorRoute
   '/operator-login': typeof OperatorLoginRoute
   '/payment-failed': typeof PaymentFailedRoute
   '/payment-success': typeof PaymentSuccessRoute
   '/subscriber': typeof SubscriberRouteWithChildren
   '/subscriber-login': typeof SubscriberLoginRoute
+  '/super-admin': typeof SuperAdminRouteWithChildren
   '/super-admin-login': typeof SuperAdminLoginRoute
   '/subscriber/notifications': typeof SubscriberNotificationsRoute
   '/subscriber/packs': typeof SubscriberPacksRoute
   '/subscriber/profile': typeof SubscriberProfileRoute
   '/subscriber/recharges': typeof SubscriberRechargesRoute
+  '/super-admin/operators': typeof SuperAdminOperatorsRoute
+  '/super-admin/settings': typeof SuperAdminSettingsRoute
   '/subscriber/': typeof SubscriberIndexRoute
+  '/super-admin/': typeof SuperAdminIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -131,6 +166,7 @@ export interface FileRoutesByTo {
   '/checkout': typeof CheckoutRoute
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
+  '/operator': typeof OperatorRoute
   '/operator-login': typeof OperatorLoginRoute
   '/payment-failed': typeof PaymentFailedRoute
   '/payment-success': typeof PaymentSuccessRoute
@@ -140,7 +176,10 @@ export interface FileRoutesByTo {
   '/subscriber/packs': typeof SubscriberPacksRoute
   '/subscriber/profile': typeof SubscriberProfileRoute
   '/subscriber/recharges': typeof SubscriberRechargesRoute
+  '/super-admin/operators': typeof SuperAdminOperatorsRoute
+  '/super-admin/settings': typeof SuperAdminSettingsRoute
   '/subscriber': typeof SubscriberIndexRoute
+  '/super-admin': typeof SuperAdminIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -149,17 +188,22 @@ export interface FileRoutesById {
   '/checkout': typeof CheckoutRoute
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
+  '/operator': typeof OperatorRoute
   '/operator-login': typeof OperatorLoginRoute
   '/payment-failed': typeof PaymentFailedRoute
   '/payment-success': typeof PaymentSuccessRoute
   '/subscriber': typeof SubscriberRouteWithChildren
   '/subscriber-login': typeof SubscriberLoginRoute
+  '/super-admin': typeof SuperAdminRouteWithChildren
   '/super-admin-login': typeof SuperAdminLoginRoute
   '/subscriber/notifications': typeof SubscriberNotificationsRoute
   '/subscriber/packs': typeof SubscriberPacksRoute
   '/subscriber/profile': typeof SubscriberProfileRoute
   '/subscriber/recharges': typeof SubscriberRechargesRoute
+  '/super-admin/operators': typeof SuperAdminOperatorsRoute
+  '/super-admin/settings': typeof SuperAdminSettingsRoute
   '/subscriber/': typeof SubscriberIndexRoute
+  '/super-admin/': typeof SuperAdminIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -169,17 +213,22 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/contact'
     | '/faq'
+    | '/operator'
     | '/operator-login'
     | '/payment-failed'
     | '/payment-success'
     | '/subscriber'
     | '/subscriber-login'
+    | '/super-admin'
     | '/super-admin-login'
     | '/subscriber/notifications'
     | '/subscriber/packs'
     | '/subscriber/profile'
     | '/subscriber/recharges'
+    | '/super-admin/operators'
+    | '/super-admin/settings'
     | '/subscriber/'
+    | '/super-admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -187,6 +236,7 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/contact'
     | '/faq'
+    | '/operator'
     | '/operator-login'
     | '/payment-failed'
     | '/payment-success'
@@ -196,7 +246,10 @@ export interface FileRouteTypes {
     | '/subscriber/packs'
     | '/subscriber/profile'
     | '/subscriber/recharges'
+    | '/super-admin/operators'
+    | '/super-admin/settings'
     | '/subscriber'
+    | '/super-admin'
   id:
     | '__root__'
     | '/'
@@ -204,17 +257,22 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/contact'
     | '/faq'
+    | '/operator'
     | '/operator-login'
     | '/payment-failed'
     | '/payment-success'
     | '/subscriber'
     | '/subscriber-login'
+    | '/super-admin'
     | '/super-admin-login'
     | '/subscriber/notifications'
     | '/subscriber/packs'
     | '/subscriber/profile'
     | '/subscriber/recharges'
+    | '/super-admin/operators'
+    | '/super-admin/settings'
     | '/subscriber/'
+    | '/super-admin/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -223,11 +281,13 @@ export interface RootRouteChildren {
   CheckoutRoute: typeof CheckoutRoute
   ContactRoute: typeof ContactRoute
   FaqRoute: typeof FaqRoute
+  OperatorRoute: typeof OperatorRoute
   OperatorLoginRoute: typeof OperatorLoginRoute
   PaymentFailedRoute: typeof PaymentFailedRoute
   PaymentSuccessRoute: typeof PaymentSuccessRoute
   SubscriberRoute: typeof SubscriberRouteWithChildren
   SubscriberLoginRoute: typeof SubscriberLoginRoute
+  SuperAdminRoute: typeof SuperAdminRouteWithChildren
   SuperAdminLoginRoute: typeof SuperAdminLoginRoute
 }
 
@@ -238,6 +298,13 @@ declare module '@tanstack/react-router' {
       path: '/super-admin-login'
       fullPath: '/super-admin-login'
       preLoaderRoute: typeof SuperAdminLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/super-admin': {
+      id: '/super-admin'
+      path: '/super-admin'
+      fullPath: '/super-admin'
+      preLoaderRoute: typeof SuperAdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/subscriber-login': {
@@ -275,6 +342,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OperatorLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/operator': {
+      id: '/operator'
+      path: '/operator'
+      fullPath: '/operator'
+      preLoaderRoute: typeof OperatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/faq': {
       id: '/faq'
       path: '/faq'
@@ -310,12 +384,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/super-admin/': {
+      id: '/super-admin/'
+      path: '/'
+      fullPath: '/super-admin/'
+      preLoaderRoute: typeof SuperAdminIndexRouteImport
+      parentRoute: typeof SuperAdminRoute
+    }
     '/subscriber/': {
       id: '/subscriber/'
       path: '/'
       fullPath: '/subscriber/'
       preLoaderRoute: typeof SubscriberIndexRouteImport
       parentRoute: typeof SubscriberRoute
+    }
+    '/super-admin/settings': {
+      id: '/super-admin/settings'
+      path: '/settings'
+      fullPath: '/super-admin/settings'
+      preLoaderRoute: typeof SuperAdminSettingsRouteImport
+      parentRoute: typeof SuperAdminRoute
+    }
+    '/super-admin/operators': {
+      id: '/super-admin/operators'
+      path: '/operators'
+      fullPath: '/super-admin/operators'
+      preLoaderRoute: typeof SuperAdminOperatorsRouteImport
+      parentRoute: typeof SuperAdminRoute
     }
     '/subscriber/recharges': {
       id: '/subscriber/recharges'
@@ -368,19 +463,47 @@ const SubscriberRouteWithChildren = SubscriberRoute._addFileChildren(
   SubscriberRouteChildren,
 )
 
+interface SuperAdminRouteChildren {
+  SuperAdminOperatorsRoute: typeof SuperAdminOperatorsRoute
+  SuperAdminSettingsRoute: typeof SuperAdminSettingsRoute
+  SuperAdminIndexRoute: typeof SuperAdminIndexRoute
+}
+
+const SuperAdminRouteChildren: SuperAdminRouteChildren = {
+  SuperAdminOperatorsRoute: SuperAdminOperatorsRoute,
+  SuperAdminSettingsRoute: SuperAdminSettingsRoute,
+  SuperAdminIndexRoute: SuperAdminIndexRoute,
+}
+
+const SuperAdminRouteWithChildren = SuperAdminRoute._addFileChildren(
+  SuperAdminRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   CheckoutRoute: CheckoutRoute,
   ContactRoute: ContactRoute,
   FaqRoute: FaqRoute,
+  OperatorRoute: OperatorRoute,
   OperatorLoginRoute: OperatorLoginRoute,
   PaymentFailedRoute: PaymentFailedRoute,
   PaymentSuccessRoute: PaymentSuccessRoute,
   SubscriberRoute: SubscriberRouteWithChildren,
   SubscriberLoginRoute: SubscriberLoginRoute,
+  SuperAdminRoute: SuperAdminRouteWithChildren,
   SuperAdminLoginRoute: SuperAdminLoginRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
