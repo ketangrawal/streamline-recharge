@@ -6,20 +6,27 @@ import { StatusBadge } from "@/components/status-badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { CalendarClock, Tv, Wallet, CheckCircle2, ArrowRight, Bell } from "lucide-react";
-import { SUBSCRIBERS, PACKS, RECHARGES, NOTIFICATIONS, formatINR, daysBetween } from "@/lib/mock-data";
+import {
+  getSubscriberById, getPacksByOperator, getRechargesForSubscriber,
+  getNotificationsForSubscriber, getCustomPriceFor, formatINR, daysBetween,
+} from "@/lib/mock-data";
+import { readSession } from "@/lib/auth";
 
 export const Route = createFileRoute("/subscriber/")({
-  head: () => ({ meta: [{ title: "My Dashboard — CableHub" }] }),
+  head: () => ({ meta: [{ title: "My Dashboard" }] }),
   component: SubHome,
 });
 
 function SubHome() {
-  const me = SUBSCRIBERS[0];
-  const pack = PACKS.find(p => p.id === me.packId)!;
+  const u = readSession()!;
+  const me = getSubscriberById(u.operator_id!, u.id)!;
+  const pack = getPacksByOperator(u.operator_id!).find(p => p.id === me.packId)!;
   const remaining = daysBetween(me.expiry);
   const total = 30;
-  const myRecharges = RECHARGES.filter(r => r.subscriberId === me.id).slice(0, 5);
-  const price = me.customPrice ?? pack.monthly;
+  const myRecharges = getRechargesForSubscriber(u.operator_id!, me.id).slice(0, 5);
+  const cp = getCustomPriceFor(u.operator_id!, me.id, pack.id);
+  const price = cp?.price ?? pack.monthly;
+  const notifs = getNotificationsForSubscriber(u.operator_id!, me.id).slice(0, 4);
 
   return (
     <div>
@@ -54,7 +61,7 @@ function SubHome() {
       </motion.div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <StatCard label="Current Price" value={formatINR(price)} icon={<Wallet className="w-5 h-5"/>} trend={me.customPrice ? { value: `Custom (was ${formatINR(pack.monthly)})`, up: true } : undefined}/>
+        <StatCard label="Current Price" value={formatINR(price)} icon={<Wallet className="w-5 h-5"/>} trend={cp ? { value: `Custom (was ${formatINR(pack.monthly)})`, up: true } : undefined}/>
         <StatCard label="Channels" value={pack.channels} icon={<Tv className="w-5 h-5"/>}/>
         <StatCard label="Status" value={<StatusBadge status={me.status}/>} icon={<CheckCircle2 className="w-5 h-5"/>}/>
         <StatCard label="Last Recharge" value={myRecharges[0] ? new Date(myRecharges[0].date).toLocaleDateString() : "—"} icon={<CalendarClock className="w-5 h-5"/>}/>
@@ -93,7 +100,8 @@ function SubHome() {
             <Button asChild variant="ghost" size="sm"><Link to="/subscriber/notifications">All</Link></Button>
           </div>
           <ul className="space-y-3">
-            {NOTIFICATIONS.slice(0, 4).map(n => (
+            {notifs.length === 0 && <li className="text-sm text-muted-foreground">No notifications.</li>}
+            {notifs.map(n => (
               <li key={n.id} className="flex gap-3 text-sm">
                 <span className={`mt-1 w-2 h-2 rounded-full shrink-0 ${
                   n.type === "success" ? "bg-success" : n.type === "warning" ? "bg-warning" : n.type === "error" ? "bg-destructive" : "bg-primary"

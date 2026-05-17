@@ -4,24 +4,29 @@ import { Check, Star, Tv } from "lucide-react";
 import { PageHeader } from "@/components/dashboard-layout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { PACKS, SUBSCRIBERS, formatINR } from "@/lib/mock-data";
+import {
+  getPacksByOperator, getSubscriberById, getCustomPriceFor, formatINR,
+} from "@/lib/mock-data";
+import { readSession } from "@/lib/auth";
 
 export const Route = createFileRoute("/subscriber/packs")({
-  head: () => ({ meta: [{ title: "Choose a pack — CableHub" }] }),
+  head: () => ({ meta: [{ title: "Choose a pack" }] }),
   component: PacksPage,
 });
 
 function PacksPage() {
-  const me = SUBSCRIBERS[0];
+  const u = readSession()!;
+  const me = getSubscriberById(u.operator_id!, u.id)!;
+  const packs = getPacksByOperator(u.operator_id!).filter(p => p.active);
   const navigate = useNavigate();
 
   return (
     <div>
       <PageHeader title="Browse Packs" subtitle="Choose a plan that fits your viewing"/>
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
-        {PACKS.map((p, i) => {
-          const customPrice = me.packId === p.id ? me.customPrice : undefined;
-          const display = customPrice ?? p.monthly;
+        {packs.map((p, i) => {
+          const cp = getCustomPriceFor(u.operator_id!, me.id, p.id);
+          const display = cp?.price ?? p.monthly;
           const yearlySavings = Math.round((1 - p.yearly / (p.monthly * 12)) * 100);
           return (
             <motion.div
@@ -43,12 +48,12 @@ function PacksPage() {
               <p className="text-xs text-muted-foreground mt-1">{p.description}</p>
 
               <div className="mt-5">
-                {customPrice && <div className="text-xs text-muted-foreground line-through">{formatINR(p.monthly)}</div>}
+                {cp && <div className="text-xs text-muted-foreground line-through">{formatINR(p.monthly)}</div>}
                 <div className="flex items-baseline gap-1">
                   <span className="text-3xl font-bold font-display">{formatINR(display)}</span>
                   <span className="text-sm text-muted-foreground">/mo</span>
                 </div>
-                {customPrice && <Badge className="mt-1 bg-success text-success-foreground">Custom price for you</Badge>}
+                {cp && <Badge className="mt-1 bg-success text-success-foreground">Custom price for you</Badge>}
               </div>
 
               <ul className="mt-5 space-y-2 text-sm flex-1">
