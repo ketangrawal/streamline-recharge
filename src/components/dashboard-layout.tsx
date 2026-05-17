@@ -3,9 +3,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState, type ReactNode } from "react";
 import { useTheme } from "@/lib/theme";
 import { useAuth } from "@/lib/auth";
+import { useOperatorBrand } from "@/components/operator-brand-provider";
 import {
   LayoutDashboard, Users, Package, Wallet, Receipt, BarChart3, Settings,
-  Bell, Search, Moon, Sun, LogOut, Menu, X, Tv, User, Home, ChevronDown,
+  Bell, Search, Moon, Sun, LogOut, Menu, Tv, User, Home, ChevronDown,
+  Building2, Palette, ShieldCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,16 +15,26 @@ import {
   DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+export type LayoutRole = "super_admin" | "operator_admin" | "subscriber";
+
 type NavItem = { to: string; label: string; icon: typeof Home };
 
-const adminNav: NavItem[] = [
-  { to: "/admin", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/admin/subscribers", label: "Subscribers", icon: Users },
-  { to: "/admin/packs", label: "Packs", icon: Package },
-  { to: "/admin/pricing", label: "Custom Pricing", icon: Wallet },
-  { to: "/admin/recharges", label: "Recharges", icon: Receipt },
-  { to: "/admin/reports", label: "Reports", icon: BarChart3 },
-  { to: "/admin/settings", label: "Settings", icon: Settings },
+const superAdminNav: NavItem[] = [
+  { to: "/super-admin", label: "Dashboard", icon: LayoutDashboard },
+  { to: "/super-admin/operators", label: "Operators", icon: Building2 },
+  { to: "/super-admin/settings", label: "Settings", icon: Settings },
+];
+
+const operatorNav: NavItem[] = [
+  { to: "/operator", label: "Dashboard", icon: LayoutDashboard },
+  { to: "/operator/subscribers", label: "Subscribers", icon: Users },
+  { to: "/operator/packs", label: "Packs", icon: Package },
+  { to: "/operator/pricing", label: "Custom Pricing", icon: Wallet },
+  { to: "/operator/recharges", label: "Recharges", icon: Receipt },
+  { to: "/operator/reports", label: "Reports", icon: BarChart3 },
+  { to: "/operator/notifications", label: "Notifications", icon: Bell },
+  { to: "/operator/branding", label: "Branding", icon: Palette },
+  { to: "/operator/settings", label: "Settings", icon: Settings },
 ];
 
 const subscriberNav: NavItem[] = [
@@ -33,28 +45,54 @@ const subscriberNav: NavItem[] = [
   { to: "/subscriber/profile", label: "Profile", icon: User },
 ];
 
-export function DashboardLayout({ role, children }: { role: "admin" | "subscriber"; children: ReactNode }) {
-  const nav = role === "admin" ? adminNav : subscriberNav;
+function navFor(role: LayoutRole) {
+  if (role === "super_admin") return superAdminNav;
+  if (role === "operator_admin") return operatorNav;
+  return subscriberNav;
+}
+
+function brandLabel(role: LayoutRole) {
+  if (role === "super_admin") return "Platform";
+  if (role === "operator_admin") return "Operator";
+  return "Subscriber";
+}
+
+function logoutTarget(role: LayoutRole) {
+  if (role === "super_admin") return "/super-admin-login" as const;
+  if (role === "operator_admin") return "/operator-login" as const;
+  return "/subscriber-login" as const;
+}
+
+export function DashboardLayout({ role, children }: { role: LayoutRole; children: ReactNode }) {
+  const nav = navFor(role);
   const path = useRouterState({ select: s => s.location.pathname });
   const { theme, toggle } = useTheme();
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const { operator } = useOperatorBrand();
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  const showBrand = role === "subscriber" && operator;
+  const brandName = showBrand ? operator!.companyName : "CableHub";
+  const brandSubtitle = showBrand ? operator!.code : brandLabel(role);
 
   const sidebar = (
     <aside className="w-64 shrink-0 border-r border-sidebar-border bg-sidebar h-full flex flex-col">
       <div className="h-16 flex items-center gap-2 px-6 border-b border-sidebar-border">
         <div className="w-9 h-9 rounded-xl bg-gradient-primary grid place-items-center shadow-glow">
-          <Tv className="w-5 h-5 text-primary-foreground" />
+          {role === "super_admin"
+            ? <ShieldCheck className="w-5 h-5 text-primary-foreground" />
+            : <Tv className="w-5 h-5 text-primary-foreground" />}
         </div>
-        <div className="flex flex-col leading-tight">
-          <span className="font-display font-bold text-sidebar-foreground">CableHub</span>
-          <span className="text-[10px] uppercase tracking-wider text-muted-foreground">{role}</span>
+        <div className="flex flex-col leading-tight min-w-0">
+          <span className="font-display font-bold text-sidebar-foreground truncate">{brandName}</span>
+          <span className="text-[10px] uppercase tracking-wider text-muted-foreground">{brandSubtitle}</span>
         </div>
       </div>
       <nav className="flex-1 overflow-y-auto p-3 space-y-1">
         {nav.map(item => {
-          const active = path === item.to || (item.to !== `/${role}` && path.startsWith(item.to));
+          const rootPath = nav[0].to;
+          const active = path === item.to || (item.to !== rootPath && path.startsWith(item.to));
           const Icon = item.icon;
           return (
             <Link
@@ -73,19 +111,26 @@ export function DashboardLayout({ role, children }: { role: "admin" | "subscribe
           );
         })}
       </nav>
-      <div className="p-3 border-t border-sidebar-border">
-        <Link to="/" className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground px-3 py-2">
-          <Home className="w-3.5 h-3.5" /> Back to site
-        </Link>
-      </div>
+      {role !== "subscriber" && (
+        <div className="p-3 border-t border-sidebar-border">
+          <Link to="/" className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground px-3 py-2">
+            <Home className="w-3.5 h-3.5" /> Back to site
+          </Link>
+        </div>
+      )}
+      {showBrand && (
+        <div className="p-3 border-t border-sidebar-border text-xs text-muted-foreground">
+          <div className="px-3 py-1">Support</div>
+          <div className="px-3">{operator!.branding.supportPhone}</div>
+          <div className="px-3 truncate">{operator!.branding.supportEmail}</div>
+        </div>
+      )}
     </aside>
   );
 
   return (
     <div className="min-h-screen flex bg-background">
-      {/* Desktop sidebar */}
       <div className="hidden lg:block">{sidebar}</div>
-      {/* Mobile sidebar */}
       <AnimatePresence>
         {mobileOpen && (
           <>
@@ -110,10 +155,10 @@ export function DashboardLayout({ role, children }: { role: "admin" | "subscribe
           <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setMobileOpen(true)}>
             <Menu className="w-5 h-5" />
           </Button>
-          <div className="relative flex-1 max-w-md">
+          <div className="relative flex-1 max-w-md hidden sm:block">
             <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <input
-              placeholder="Search subscribers, packs, transactions…"
+              placeholder="Search…"
               className="w-full h-10 pl-10 pr-4 rounded-xl bg-muted/60 border border-transparent focus:border-ring focus:bg-background outline-none text-sm transition-colors"
             />
           </div>
@@ -121,10 +166,12 @@ export function DashboardLayout({ role, children }: { role: "admin" | "subscribe
             <Button variant="ghost" size="icon" onClick={toggle} aria-label="Toggle theme">
               {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
             </Button>
-            <Button variant="ghost" size="icon" className="relative" onClick={() => navigate({ to: role === "admin" ? "/admin" : "/subscriber/notifications" })}>
-              <Bell className="w-4 h-4" />
-              <span className="absolute top-2 right-2 w-2 h-2 bg-destructive rounded-full" />
-            </Button>
+            {role === "subscriber" && (
+              <Button variant="ghost" size="icon" className="relative" onClick={() => navigate({ to: "/subscriber/notifications" })}>
+                <Bell className="w-4 h-4" />
+                <span className="absolute top-2 right-2 w-2 h-2 bg-destructive rounded-full" />
+              </Button>
+            )}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="gap-2 pl-2 pr-3">
@@ -136,14 +183,14 @@ export function DashboardLayout({ role, children }: { role: "admin" | "subscribe
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuLabel>{role === "admin" ? "Admin Account" : "Subscriber Account"}</DropdownMenuLabel>
+                <DropdownMenuLabel>{brandLabel(role)} Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 {role === "subscriber" && (
                   <DropdownMenuItem onClick={() => navigate({ to: "/subscriber/profile" })}>
                     <User className="w-4 h-4 mr-2" /> Profile
                   </DropdownMenuItem>
                 )}
-                <DropdownMenuItem onClick={() => { logout(); navigate({ to: "/" }); }}>
+                <DropdownMenuItem onClick={() => { const to = logoutTarget(role); logout(); navigate({ to }); }}>
                   <LogOut className="w-4 h-4 mr-2" /> Logout
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -170,5 +217,3 @@ export function PageHeader({ title, subtitle, action }: { title: string; subtitl
     </motion.div>
   );
 }
-
-export { X };
