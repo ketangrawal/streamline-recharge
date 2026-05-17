@@ -1,12 +1,15 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import { motion } from "framer-motion";
 import { useState } from "react";
 import { z } from "zod";
-import { motion } from "framer-motion";
 import { Tv, ShieldCheck, ArrowLeft, Wallet, CreditCard, Smartphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { PACKS, SUBSCRIBERS, formatINR } from "@/lib/mock-data";
+import {
+  getPacksByOperator, getSubscriberById, getCustomPriceFor, formatINR,
+} from "@/lib/mock-data";
+import { readSession } from "@/lib/auth";
 import { toast } from "sonner";
 
 const search = z.object({
@@ -16,7 +19,14 @@ const search = z.object({
 
 export const Route = createFileRoute("/checkout")({
   validateSearch: (s) => search.parse(s),
-  head: () => ({ meta: [{ title: "Checkout — CableHub" }] }),
+  beforeLoad: () => {
+    if (typeof window === "undefined") return;
+    const u = (() => { try { return JSON.parse(localStorage.getItem("cabletv_session_v2") ?? "null"); } catch { return null; } })();
+    if (!u || u.role !== "subscriber" || !u.operator_id) {
+      throw (require("@tanstack/react-router") as typeof import("@tanstack/react-router")).redirect({ to: "/subscriber-login" });
+    }
+  },
+  head: () => ({ meta: [{ title: "Checkout" }] }),
   component: Checkout,
 });
 
@@ -30,14 +40,17 @@ const DURATIONS = [
 function Checkout() {
   const { pack: packId, duration } = Route.useSearch();
   const navigate = useNavigate();
-  const pack = PACKS.find(p => p.id === packId) ?? PACKS[1];
-  const me = SUBSCRIBERS[0];
+  const u = readSession()!;
+  const me = getSubscriberById(u.operator_id!, u.id)!;
+  const packs = getPacksByOperator(u.operator_id!);
+  const pack = packs.find(p => p.id === packId) ?? packs.find(p => p.popular) ?? packs[0];
   const [dur, setDur] = useState<typeof DURATIONS[number]["key"]>(duration ?? "monthly");
   const [method, setMethod] = useState("upi");
 
   const durObj = DURATIONS.find(d => d.key === dur)!;
-  const baseUnit = me.customPrice ?? pack.monthly;
-  const subtotal = pack[dur] ?? baseUnit * durObj.mult;
+  const cp = getCustomPriceFor(u.operator_id!, me.id, pack.id);
+  const baseUnit = cp?.price ?? pack.monthly;
+  const subtotal = cp ? baseUnit * durObj.mult : (pack[dur] ?? baseUnit * durObj.mult);
   const gst = Math.round(subtotal * 0.18);
   const total = subtotal + gst;
 
@@ -65,9 +78,9 @@ function Checkout() {
         <div className="lg:col-span-3 rounded-2xl border border-border bg-card p-6 shadow-soft space-y-6">
           <div>
             <h2 className="font-display text-xl font-semibold">Choose duration</h2>
-            <RadioGroup value={dur} onValueChange={v => setDur(v as any)} className="grid grid-cols-2 gap-3 mt-3">
+            <RadioGroup value={dur} onValueChange={v => setDur(v as typeof dur)} className="grid grid-cols-2 gap-3 mt-3">
               {DURATIONS.map(d => {
-                const amount = pack[d.key] ?? baseUnit * d.mult;
+                const amount = cp ? baseUnit * d.mult : (pack[d.key] ?? baseUnit * d.mult);
                 return (
                   <Label key={d.key} className={`cursor-pointer rounded-xl border p-4 flex items-center justify-between ${dur === d.key ? "border-primary ring-1 ring-primary/30 bg-primary/5" : "border-border"}`}>
                     <div>
@@ -92,7 +105,7 @@ function Checkout() {
           </div>
         </div>
 
-        <div className="lg:col-span-2 rounded-2xl border border-border bg-card p-6 shadow-soft h-fit sticky top-24">
+        <div className="lg:col-span-2 rounded-2xl border border-border bg-card p-6 shadow-soft h-fit lg:sticky lg:top-24">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-11 h-11 rounded-xl bg-gradient-primary text-primary-foreground grid place-items-center shadow-glow"><Tv className="w-5 h-5"/></div>
             <div>
