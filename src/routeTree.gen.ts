@@ -10,11 +10,23 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SubscriberLoginRouteImport } from './routes/subscriber-login'
+import { Route as SubscriberRouteImport } from './routes/subscriber'
+import { Route as PaymentSuccessRouteImport } from './routes/payment-success'
+import { Route as PaymentFailedRouteImport } from './routes/payment-failed'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
+import { Route as FaqRouteImport } from './routes/faq'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SubscriberIndexRouteImport } from './routes/subscriber.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as SubscriberRechargesRouteImport } from './routes/subscriber.recharges'
+import { Route as SubscriberProfileRouteImport } from './routes/subscriber.profile'
+import { Route as SubscriberPacksRouteImport } from './routes/subscriber.packs'
+import { Route as SubscriberNotificationsRouteImport } from './routes/subscriber.notifications'
 import { Route as AdminSubscribersRouteImport } from './routes/admin.subscribers'
 import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
 import { Route as AdminReportsRouteImport } from './routes/admin.reports'
@@ -27,6 +39,21 @@ const SubscriberLoginRoute = SubscriberLoginRouteImport.update({
   path: '/subscriber-login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SubscriberRoute = SubscriberRouteImport.update({
+  id: '/subscriber',
+  path: '/subscriber',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PaymentSuccessRoute = PaymentSuccessRouteImport.update({
+  id: '/payment-success',
+  path: '/payment-success',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PaymentFailedRoute = PaymentFailedRouteImport.update({
+  id: '/payment-failed',
+  path: '/payment-failed',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -37,9 +64,29 @@ const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
   path: '/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CheckoutRoute = CheckoutRouteImport.update({
+  id: '/checkout',
+  path: '/checkout',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -47,10 +94,35 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SubscriberIndexRoute = SubscriberIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => SubscriberRoute,
+} as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AdminRoute,
+} as any)
+const SubscriberRechargesRoute = SubscriberRechargesRouteImport.update({
+  id: '/recharges',
+  path: '/recharges',
+  getParentRoute: () => SubscriberRoute,
+} as any)
+const SubscriberProfileRoute = SubscriberProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => SubscriberRoute,
+} as any)
+const SubscriberPacksRoute = SubscriberPacksRouteImport.update({
+  id: '/packs',
+  path: '/packs',
+  getParentRoute: () => SubscriberRoute,
+} as any)
+const SubscriberNotificationsRoute = SubscriberNotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => SubscriberRoute,
 } as any)
 const AdminSubscribersRoute = AdminSubscribersRouteImport.update({
   id: '/subscribers',
@@ -85,9 +157,16 @@ const AdminPacksRoute = AdminPacksRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
+  '/checkout': typeof CheckoutRoute
+  '/contact': typeof ContactRoute
+  '/faq': typeof FaqRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/payment-failed': typeof PaymentFailedRoute
+  '/payment-success': typeof PaymentSuccessRoute
+  '/subscriber': typeof SubscriberRouteWithChildren
   '/subscriber-login': typeof SubscriberLoginRoute
   '/admin/packs': typeof AdminPacksRoute
   '/admin/pricing': typeof AdminPricingRoute
@@ -95,12 +174,23 @@ export interface FileRoutesByFullPath {
   '/admin/reports': typeof AdminReportsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/subscribers': typeof AdminSubscribersRoute
+  '/subscriber/notifications': typeof SubscriberNotificationsRoute
+  '/subscriber/packs': typeof SubscriberPacksRoute
+  '/subscriber/profile': typeof SubscriberProfileRoute
+  '/subscriber/recharges': typeof SubscriberRechargesRoute
   '/admin/': typeof AdminIndexRoute
+  '/subscriber/': typeof SubscriberIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/checkout': typeof CheckoutRoute
+  '/contact': typeof ContactRoute
+  '/faq': typeof FaqRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/payment-failed': typeof PaymentFailedRoute
+  '/payment-success': typeof PaymentSuccessRoute
   '/subscriber-login': typeof SubscriberLoginRoute
   '/admin/packs': typeof AdminPacksRoute
   '/admin/pricing': typeof AdminPricingRoute
@@ -108,14 +198,26 @@ export interface FileRoutesByTo {
   '/admin/reports': typeof AdminReportsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/subscribers': typeof AdminSubscribersRoute
+  '/subscriber/notifications': typeof SubscriberNotificationsRoute
+  '/subscriber/packs': typeof SubscriberPacksRoute
+  '/subscriber/profile': typeof SubscriberProfileRoute
+  '/subscriber/recharges': typeof SubscriberRechargesRoute
   '/admin': typeof AdminIndexRoute
+  '/subscriber': typeof SubscriberIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
+  '/checkout': typeof CheckoutRoute
+  '/contact': typeof ContactRoute
+  '/faq': typeof FaqRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/payment-failed': typeof PaymentFailedRoute
+  '/payment-success': typeof PaymentSuccessRoute
+  '/subscriber': typeof SubscriberRouteWithChildren
   '/subscriber-login': typeof SubscriberLoginRoute
   '/admin/packs': typeof AdminPacksRoute
   '/admin/pricing': typeof AdminPricingRoute
@@ -123,15 +225,27 @@ export interface FileRoutesById {
   '/admin/reports': typeof AdminReportsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/subscribers': typeof AdminSubscribersRoute
+  '/subscriber/notifications': typeof SubscriberNotificationsRoute
+  '/subscriber/packs': typeof SubscriberPacksRoute
+  '/subscriber/profile': typeof SubscriberProfileRoute
+  '/subscriber/recharges': typeof SubscriberRechargesRoute
   '/admin/': typeof AdminIndexRoute
+  '/subscriber/': typeof SubscriberIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/about'
     | '/admin'
+    | '/checkout'
+    | '/contact'
+    | '/faq'
     | '/forgot-password'
     | '/login'
+    | '/payment-failed'
+    | '/payment-success'
+    | '/subscriber'
     | '/subscriber-login'
     | '/admin/packs'
     | '/admin/pricing'
@@ -139,12 +253,23 @@ export interface FileRouteTypes {
     | '/admin/reports'
     | '/admin/settings'
     | '/admin/subscribers'
+    | '/subscriber/notifications'
+    | '/subscriber/packs'
+    | '/subscriber/profile'
+    | '/subscriber/recharges'
     | '/admin/'
+    | '/subscriber/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/about'
+    | '/checkout'
+    | '/contact'
+    | '/faq'
     | '/forgot-password'
     | '/login'
+    | '/payment-failed'
+    | '/payment-success'
     | '/subscriber-login'
     | '/admin/packs'
     | '/admin/pricing'
@@ -152,13 +277,25 @@ export interface FileRouteTypes {
     | '/admin/reports'
     | '/admin/settings'
     | '/admin/subscribers'
+    | '/subscriber/notifications'
+    | '/subscriber/packs'
+    | '/subscriber/profile'
+    | '/subscriber/recharges'
     | '/admin'
+    | '/subscriber'
   id:
     | '__root__'
     | '/'
+    | '/about'
     | '/admin'
+    | '/checkout'
+    | '/contact'
+    | '/faq'
     | '/forgot-password'
     | '/login'
+    | '/payment-failed'
+    | '/payment-success'
+    | '/subscriber'
     | '/subscriber-login'
     | '/admin/packs'
     | '/admin/pricing'
@@ -166,14 +303,26 @@ export interface FileRouteTypes {
     | '/admin/reports'
     | '/admin/settings'
     | '/admin/subscribers'
+    | '/subscriber/notifications'
+    | '/subscriber/packs'
+    | '/subscriber/profile'
+    | '/subscriber/recharges'
     | '/admin/'
+    | '/subscriber/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
   AdminRoute: typeof AdminRouteWithChildren
+  CheckoutRoute: typeof CheckoutRoute
+  ContactRoute: typeof ContactRoute
+  FaqRoute: typeof FaqRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   LoginRoute: typeof LoginRoute
+  PaymentFailedRoute: typeof PaymentFailedRoute
+  PaymentSuccessRoute: typeof PaymentSuccessRoute
+  SubscriberRoute: typeof SubscriberRouteWithChildren
   SubscriberLoginRoute: typeof SubscriberLoginRoute
 }
 
@@ -184,6 +333,27 @@ declare module '@tanstack/react-router' {
       path: '/subscriber-login'
       fullPath: '/subscriber-login'
       preLoaderRoute: typeof SubscriberLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/subscriber': {
+      id: '/subscriber'
+      path: '/subscriber'
+      fullPath: '/subscriber'
+      preLoaderRoute: typeof SubscriberRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/payment-success': {
+      id: '/payment-success'
+      path: '/payment-success'
+      fullPath: '/payment-success'
+      preLoaderRoute: typeof PaymentSuccessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/payment-failed': {
+      id: '/payment-failed'
+      path: '/payment-failed'
+      fullPath: '/payment-failed'
+      preLoaderRoute: typeof PaymentFailedRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -200,11 +370,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/checkout': {
+      id: '/checkout'
+      path: '/checkout'
+      fullPath: '/checkout'
+      preLoaderRoute: typeof CheckoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin': {
       id: '/admin'
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -214,12 +412,47 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/subscriber/': {
+      id: '/subscriber/'
+      path: '/'
+      fullPath: '/subscriber/'
+      preLoaderRoute: typeof SubscriberIndexRouteImport
+      parentRoute: typeof SubscriberRoute
+    }
     '/admin/': {
       id: '/admin/'
       path: '/'
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
+    }
+    '/subscriber/recharges': {
+      id: '/subscriber/recharges'
+      path: '/recharges'
+      fullPath: '/subscriber/recharges'
+      preLoaderRoute: typeof SubscriberRechargesRouteImport
+      parentRoute: typeof SubscriberRoute
+    }
+    '/subscriber/profile': {
+      id: '/subscriber/profile'
+      path: '/profile'
+      fullPath: '/subscriber/profile'
+      preLoaderRoute: typeof SubscriberProfileRouteImport
+      parentRoute: typeof SubscriberRoute
+    }
+    '/subscriber/packs': {
+      id: '/subscriber/packs'
+      path: '/packs'
+      fullPath: '/subscriber/packs'
+      preLoaderRoute: typeof SubscriberPacksRouteImport
+      parentRoute: typeof SubscriberRoute
+    }
+    '/subscriber/notifications': {
+      id: '/subscriber/notifications'
+      path: '/notifications'
+      fullPath: '/subscriber/notifications'
+      preLoaderRoute: typeof SubscriberNotificationsRouteImport
+      parentRoute: typeof SubscriberRoute
     }
     '/admin/subscribers': {
       id: '/admin/subscribers'
@@ -288,13 +521,50 @@ const AdminRouteChildren: AdminRouteChildren = {
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
+interface SubscriberRouteChildren {
+  SubscriberNotificationsRoute: typeof SubscriberNotificationsRoute
+  SubscriberPacksRoute: typeof SubscriberPacksRoute
+  SubscriberProfileRoute: typeof SubscriberProfileRoute
+  SubscriberRechargesRoute: typeof SubscriberRechargesRoute
+  SubscriberIndexRoute: typeof SubscriberIndexRoute
+}
+
+const SubscriberRouteChildren: SubscriberRouteChildren = {
+  SubscriberNotificationsRoute: SubscriberNotificationsRoute,
+  SubscriberPacksRoute: SubscriberPacksRoute,
+  SubscriberProfileRoute: SubscriberProfileRoute,
+  SubscriberRechargesRoute: SubscriberRechargesRoute,
+  SubscriberIndexRoute: SubscriberIndexRoute,
+}
+
+const SubscriberRouteWithChildren = SubscriberRoute._addFileChildren(
+  SubscriberRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
   AdminRoute: AdminRouteWithChildren,
+  CheckoutRoute: CheckoutRoute,
+  ContactRoute: ContactRoute,
+  FaqRoute: FaqRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
   LoginRoute: LoginRoute,
+  PaymentFailedRoute: PaymentFailedRoute,
+  PaymentSuccessRoute: PaymentSuccessRoute,
+  SubscriberRoute: SubscriberRouteWithChildren,
   SubscriberLoginRoute: SubscriberLoginRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
