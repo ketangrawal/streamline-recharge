@@ -92,7 +92,9 @@ function RechargesPage() {
   );
 }
 
-function NewRechargeDialog({ open, setOpen, onCreate, navigate }: any) {
+function NewRechargeDialog({ open, setOpen, onCreate, navigate }: {
+  open: boolean; setOpen: (v: boolean) => void; onCreate: (r: Recharge) => void; navigate: ReturnType<typeof useNavigate>;
+}) {
   const [subId, setSubId] = useState(SUBSCRIBERS[0].id);
   const [packId, setPackId] = useState(SUBSCRIBERS[0].packId);
   const [dur, setDur] = useState<typeof DURATIONS[number]["key"]>("monthly");
