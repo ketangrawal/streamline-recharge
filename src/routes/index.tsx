@@ -47,6 +47,7 @@ function Nav() {
           <Link to="/contact" className="hover:text-foreground transition-colors">Contact</Link>
         </nav>
         <div className="ml-auto flex items-center gap-2">
+          <Button asChild variant="ghost" size="sm"><Link to="/super-admin-login">Admin</Link></Button>
           <Button asChild variant="ghost" size="sm"><Link to="/subscriber-login">Subscriber</Link></Button>
           <Button asChild size="sm" className="bg-gradient-primary text-primary-foreground shadow-glow border-0 hover:opacity-90">
             <Link to="/operator-login">Operator Login</Link>
