@@ -49,7 +49,7 @@ function Nav() {
         <div className="ml-auto flex items-center gap-2">
           <Button asChild variant="ghost" size="sm"><Link to="/subscriber-login">Subscriber</Link></Button>
           <Button asChild size="sm" className="bg-gradient-primary text-primary-foreground shadow-glow border-0 hover:opacity-90">
-            <Link to="/login">Operator Login</Link>
+            <Link to="/operator-login">Operator Login</Link>
           </Button>
         </div>
       </div>
@@ -88,7 +88,7 @@ function Hero() {
           className="mt-9 flex flex-wrap items-center justify-center gap-3"
         >
           <Button asChild size="lg" className="bg-gradient-primary text-primary-foreground shadow-glow border-0 hover:opacity-90 h-12 px-6">
-            <Link to="/login">Open Admin Dashboard <ArrowRight className="w-4 h-4 ml-1" /></Link>
+            <Link to="/operator-login">Open Admin Dashboard <ArrowRight className="w-4 h-4 ml-1" /></Link>
           </Button>
           <Button asChild size="lg" variant="outline" className="h-12 px-6">
             <Link to="/subscriber-login">Subscriber Portal</Link>
@@ -218,7 +218,7 @@ function Pricing() {
                 ))}
               </ul>
               <Button asChild className={`mt-7 w-full ${t.popular ? "bg-background text-foreground hover:bg-background/90" : "bg-gradient-primary text-primary-foreground border-0"}`}>
-                <Link to="/login">Get started</Link>
+                <Link to="/operator-login">Get started</Link>
               </Button>
             </motion.div>
           ))}
@@ -239,7 +239,7 @@ function CTA() {
             <p className="mt-4 text-primary-foreground/85 max-w-xl mx-auto">Launch your operator dashboard in minutes. No credit card required.</p>
             <div className="mt-7 flex flex-wrap justify-center gap-3">
               <Button asChild size="lg" className="bg-background text-foreground h-12 px-7 hover:bg-background/90">
-                <Link to="/login">Try Admin Dashboard</Link>
+                <Link to="/operator-login">Try Admin Dashboard</Link>
               </Button>
               <Button asChild size="lg" variant="outline" className="h-12 px-7 bg-transparent border-primary-foreground/40 text-primary-foreground hover:bg-primary-foreground/10">
                 <Link to="/contact">Talk to us</Link>
